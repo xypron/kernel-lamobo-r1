@@ -15,7 +15,9 @@ build:
 	cd linux && git checkout v$(TAG)
 	cd linux && ( git branch -D build || true )
 	cd linux && git checkout -b build
-	cd linux && ../patch/patch-$(TAG)
+	if test -x patch/patch-$(TAG); \
+	then cd linux && ../patch/patch-$(TAG); \
+	else true; fi
 	cp config/config-$(TAG) linux/.config
 	cd linux && make oldconfig
 	rm -f linux/arch/arm/boot/zImage
