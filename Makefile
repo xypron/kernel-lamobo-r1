@@ -49,17 +49,17 @@ copy:
 	cd linux/deploy && tar -czf $$VERSION-headers.tar.gz usr
 
 install:
-	mkdir -p -m 755 $(DESTDIR)/boot;true
+	mkdir -p -m 755 $(DESTDIR)/boot/uboot;true
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot/uboot/uImage;true
+	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot/uboot/uImage
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot;true
+	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/config-$$VERSION $(DESTDIR)/boot;true
+	cp linux/deploy/config-$$VERSION $(DESTDIR)/boot
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/$$VERSION-modules-firmware.tar.gz $(DESTDIR)/boot;true
+	cp linux/deploy/$$VERSION-modules-firmware.tar.gz $(DESTDIR)/boot
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/$$VERSION-headers.tar.gz $(DESTDIR)/boot;true
+	cp linux/deploy/$$VERSION-headers.tar.gz $(DESTDIR)/boot
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
 	tar -xzf linux/deploy/$$VERSION-modules-firmware.tar.gz -C $(DESTDIR)/
 
