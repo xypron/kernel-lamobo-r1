@@ -1,4 +1,10 @@
-bananapi-kernel-stable (3.19.0.0) unstable; urgency=medium
+bananapi-kernel (3.19.0.1) unstable; urgency=medium
+
+  * Kernel 3.19-rc4
+
+ -- Heinrich Schuchardt <xypron.glpk@gmx.de>  Thu, 15 Jan 2015 19:31:19 +0100
+
+bananapi-kernel (3.19.0.0) unstable; urgency=medium
 
   * Kernel 3.19-rc2
 

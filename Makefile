@@ -1,4 +1,4 @@
-TAG=3.19-rc2
+TAG=3.19-rc4
 
 all: prepare build copy
 
@@ -19,7 +19,7 @@ build:
 	cp config/config-$(TAG) linux/.config
 	cd linux && make oldconfig
 	rm -f linux/arch/arm/boot/zImage
-	cd linux && make -j6 zImage dtbs modules
+	cd linux && make -j6 zImage dtbs
 	cat linux/arch/arm/boot/dts/sun7i-a20-bananapi.dtb >> \
 	linux/arch/arm/boot/zImage
 	cd linux && make LOADADDR=0x40008000 uImage
