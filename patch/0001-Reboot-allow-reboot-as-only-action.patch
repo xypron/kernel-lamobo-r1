@@ -43,8 +43,8 @@ index 5925f5a..9c7792c 100644
  		return -EINVAL;
  
 +#if defined CONFIG_REBOOT_ONLY
-+	if (cmd != LINUX_REBOOT_CMD_RESTART)
-+		return -EINVAL;
++	if (cmd == LINUX_REBOOT_CMD_POWER_OFF || cmd == LINUX_REBOOT_CMD_HALT)
++		cmd = LINUX_REBOOT_CMD_RESTART;
 +#endif
 +
  	/*
