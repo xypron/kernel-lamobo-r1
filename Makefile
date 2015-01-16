@@ -51,7 +51,7 @@ copy:
 install:
 	mkdir -p -m 755 $(DESTDIR)/boot/uboot;true
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot/uboot/uImage
+	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot/uImage
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
 	cp linux/deploy/$$VERSION.uImage $(DESTDIR)/boot
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
