@@ -21,7 +21,7 @@ build:
 	cp config/config-$(TAG) linux/.config
 	cd linux && make oldconfig
 	rm -f linux/arch/arm/boot/zImage
-	cd linux && make -j6 zImage dtbs
+	cd linux && make -j3 zImage dtbs modules
 	cat linux/arch/arm/boot/dts/sun7i-a20-bananapi.dtb >> \
 	linux/arch/arm/boot/zImage
 	cd linux && make LOADADDR=0x40008000 uImage
