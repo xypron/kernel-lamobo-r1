@@ -1,4 +1,4 @@
-From e52081b4c15375750bb97e79a94602c3ee5cf351 Mon Sep 17 00:00:00 2001
+From 5ccd517d13c9ecd2a2054480be6ee30bf53281fd Mon Sep 17 00:00:00 2001
 From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 Date: Thu, 15 Jan 2015 19:42:02 +0000
 Subject: [PATCH] Reboot: allow reboot as only action
@@ -15,10 +15,14 @@ Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
  2 files changed, 17 insertions(+)
 
 diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-index 48b28d3..ed1fb01 100644
+index 48b28d3..7feed0c 100644
 --- a/kernel/power/Kconfig
 +++ b/kernel/power/Kconfig
-@@ -1,3 +1,15 @@
+@@ -300,3 +300,15 @@ config PM_GENERIC_DOMAINS_OF
+ 
+ config CPU_PM
+ 	bool
++
 +config REBOOT_ONLY
 +	bool "Only allow reboot"
 +	default n
@@ -26,16 +30,12 @@ index 48b28d3..ed1fb01 100644
 +	  On stand alone servers a power down may be unwise as the
 +	  system cannot be booted without manual intervention.
 +
-+	  If this flag is set, the reboot syscall accepts only the
-+	  LINUX_REBOOT_CMD_RESTART command.
++	  If this flag is set, the reboot syscall will execute a
++	  reboot when requested to halt or power down.
 +
 +	  If in doubt, say N.
-+
- config SUSPEND
- 	bool "Suspend to RAM and standby"
- 	depends on ARCH_SUSPEND_POSSIBLE
 diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 5925f5a..9c7792c 100644
+index 5925f5a..7c7bec9 100644
 --- a/kernel/reboot.c
 +++ b/kernel/reboot.c
 @@ -296,6 +296,11 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
