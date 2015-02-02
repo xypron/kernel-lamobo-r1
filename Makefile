@@ -39,7 +39,7 @@ copy:
 	cd linux && make modules_install INSTALL_MOD_PATH=deploy
 	cd linux && make headers_install INSTALL_HDR_PATH=deploy/headers
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
-	cd linux && make dir -p deplay/usr/src/linux-headers-$$VERSION
+	cd linux && mkdir -p deploy/usr/src/linux-headers-$$VERSION
 	VERSION=$$(cd linux && make --no-print-directory kernelversion) && \
 	cd linux && mv deploy/headers/* \
 	deploy/usr/src/linux-headers-$$VERSION
