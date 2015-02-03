@@ -1,0 +1,37 @@
+From 3233c506e0a5b53adc7d70db396875de6cb5835f Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 3 Feb 2015 18:47:55 +0100
+Subject: [PATCH 0/2] sun7i: SMP support for the Allwinner A20 CPU
+
+This patch series adds SMP support for the Allwinner A20 CPU.
+
+It makes following changes in the device tree:
+
+  * add address range for the CPU configuration registers
+  * define an enable-method for the CPU
+
+It supplies the smp_boot_secondary and smp_prepare_cpus
+routines.
+
+The code does not support hot-plugable CPUs.
+
+The code is based on a prior proposed patch series
+https://lkml.org/lkml/2013/10/17/353 by
+Fan Rong <cinifr@gmail.com>
+and code in https://github.com/linux-sunxi/linux-sunxi by
+Hans de Goede <jwrdegoede@fedoraproject.org>.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+
+Heinrich Schuchardt (2):
+  sun7i: device tree changes for SMP support
+  sun7i: SMP startup code
+
+ Documentation/devicetree/bindings/arm/cpus.txt |  1 +
+ arch/arm/boot/dts/sun7i-a20.dtsi               |  6 ++
+ arch/arm/mach-sunxi/platsmp.c                  | 77 +++++++++++++++++++++++++-
+ 3 files changed, 83 insertions(+), 1 deletion(-)
+
+-- 
+2.1.4
+

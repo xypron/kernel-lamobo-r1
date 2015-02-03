@@ -1,7 +1,7 @@
 From 419ec1bf142aff4f47f3a37f268088b6c636ab08 Mon Sep 17 00:00:00 2001
 From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 Date: Tue, 3 Feb 2015 08:22:09 +0100
-Subject: [PATCH 1/1] sun7i: device tree changes for SMP support
+Subject: [PATCH 1/2] sun7i: device tree changes for SMP support
 
 This patch is part of a patch series to add SMP support for the Allwinner
 A20 CPU. It provides the following changes for the device tree:

@@ -1,0 +1,126 @@
+From 3233c506e0a5b53adc7d70db396875de6cb5835f Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 3 Feb 2015 18:38:54 +0100
+Subject: [PATCH 2/2] sun7i: SMP startup code
+
+This patch is part of a patch series adding SMP support for the
+Allwinner A20 CPU.
+
+It supplies the smp_boot_secondary and smp_prepare_cpus
+routines.
+
+The code does not support hot-plugable CPUs.
+
+The code is based on a prior proposed patch
+https://lkml.org/lkml/2013/10/17/353 by
+Fan Rong <cinifr@gmail.com>
+and code in https://github.com/linux-sunxi/linux-sunxi by
+Hans de Goede <jwrdegoede@fedoraproject.org>.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ arch/arm/mach-sunxi/platsmp.c | 77 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 76 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-sunxi/platsmp.c b/arch/arm/mach-sunxi/platsmp.c
+index e44d028..05d90b4 100644
+--- a/arch/arm/mach-sunxi/platsmp.c
++++ b/arch/arm/mach-sunxi/platsmp.c
+@@ -21,6 +21,7 @@
+ #include <linux/of_address.h>
+ #include <linux/smp.h>
+ 
++/* common registers */
+ #define CPUCFG_CPU_PWR_CLAMP_STATUS_REG(cpu)	((cpu) * 0x40 + 0x64)
+ #define CPUCFG_CPU_RST_CTRL_REG(cpu)		(((cpu) + 1) * 0x40)
+ #define CPUCFG_CPU_CTRL_REG(cpu)		(((cpu) + 1) * 0x40 + 0x04)
+@@ -30,7 +31,10 @@
+ #define CPUCFG_PRIVATE1_REG			0x1a8
+ #define CPUCFG_DBG_CTL0_REG			0x1e0
+ #define CPUCFG_DBG_CTL1_REG			0x1e4
+-
++/* A20 registers */
++#define CPUCFG_CPU1_PWR_CLAMP			0x1b0
++#define CPUCFG_CPU1_PWROFF_REG			0x1b4
++/* A31 registers */
+ #define PRCM_CPU_PWROFF_REG			0x100
+ #define PRCM_CPU_PWR_CLAMP_REG(cpu)		(((cpu) * 4) + 0x140)
+ 
+@@ -121,3 +125,74 @@ static struct smp_operations sun6i_smp_ops __initdata = {
+ 	.smp_boot_secondary	= sun6i_smp_boot_secondary,
+ };
+ CPU_METHOD_OF_DECLARE(sun6i_smp, "allwinner,sun6i-a31", &sun6i_smp_ops);
++
++static void __init sun7i_smp_prepare_cpus(unsigned int max_cpus)
++{
++	struct device_node *node;
++
++	node = of_find_compatible_node(NULL, NULL,
++				       "allwinner,sun7i-a20-cpuconfig");
++	if (!node) {
++		pr_err("Missing A20 CPU config node in the device tree\n");
++		return;
++	}
++
++	cpucfg_membase = of_iomap(node, 0);
++	if (!cpucfg_membase)
++		pr_err("Couldn't map A20 CPU config registers\n");
++
++}
++
++static int sun7i_smp_boot_secondary(unsigned int cpu,
++				    struct task_struct *idle)
++{
++	u32 reg;
++	int i;
++
++	if (cpucfg_membase)
++		return -EFAULT;
++
++	spin_lock(&cpu_lock);
++
++	/* Set CPU boot address */
++	writel(virt_to_phys(secondary_startup),
++	       cpucfg_membase + CPUCFG_PRIVATE0_REG);
++
++	/* Assert the CPU core in reset */
++	writel(0, cpucfg_membase + CPUCFG_CPU_RST_CTRL_REG(cpu));
++
++	/* Assert the L1 cache in reset */
++	reg = readl(cpucfg_membase + CPUCFG_GEN_CTRL_REG);
++	writel(reg & ~BIT(cpu), cpucfg_membase + CPUCFG_GEN_CTRL_REG);
++
++	/* Disable external debug access */
++	reg = readl(cpucfg_membase + CPUCFG_DBG_CTL1_REG);
++	writel(reg & ~BIT(cpu), cpucfg_membase + CPUCFG_DBG_CTL1_REG);
++
++	/* Power up CPU1 */
++	for (i = 0xff; i != 0; i >>= 1)
++		writel(i, cpucfg_membase + CPUCFG_CPU1_PWR_CLAMP);
++	mdelay(10);
++
++	/* Clear CPU power-off gating */
++	reg = readl(cpucfg_membase + CPUCFG_CPU1_PWROFF_REG);
++	writel(reg & ~BIT(cpu), cpucfg_membase + CPUCFG_CPU1_PWROFF_REG);
++	mdelay(1);
++
++	/* Deassert the CPU core reset */
++	writel(3, cpucfg_membase + CPUCFG_CPU_RST_CTRL_REG(cpu));
++
++	/* Enable back the external debug accesses */
++	reg = readl(cpucfg_membase + CPUCFG_DBG_CTL1_REG);
++	writel(reg | BIT(cpu), cpucfg_membase + CPUCFG_DBG_CTL1_REG);
++
++	spin_unlock(&cpu_lock);
++
++	return 0;
++}
++
++static struct smp_operations sun6i_smp_ops __initdata = {
++	.smp_prepare_cpus	= sun7i_smp_prepare_cpus,
++	.smp_boot_secondary	= sun7i_smp_boot_secondary,
++};
++CPU_METHOD_OF_DECLARE(sun6i_smp, "allwinner,sun7i-a20", &sun7i_smp_ops);
+-- 
+2.1.4
+
