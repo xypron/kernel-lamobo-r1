@@ -1,0 +1,59 @@
+From 419ec1bf142aff4f47f3a37f268088b6c636ab08 Mon Sep 17 00:00:00 2001
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Date: Tue, 3 Feb 2015 08:22:09 +0100
+Subject: [PATCH 1/1] sun7i: device tree changes for SMP support
+
+This patch is part of a patch series to add SMP support for the Allwinner
+A20 CPU. It provides the following changes for the device tree:
+
+  * add address range for the CPU configuration registers
+  * define an enable-method for the CPU
+
+The start of the address range is specified in the A20 user manual as
+0x01c25c00. The last documented register is at offset +0x298.
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+---
+ Documentation/devicetree/bindings/arm/cpus.txt | 1 +
+ arch/arm/boot/dts/sun7i-a20.dtsi               | 6 ++++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/cpus.txt b/Documentation/devicetree/bindings/arm/cpus.txt
+index b2aacbe..0a9023d 100644
+--- a/Documentation/devicetree/bindings/arm/cpus.txt
++++ b/Documentation/devicetree/bindings/arm/cpus.txt
+@@ -187,6 +187,7 @@ nodes to be present and contain the properties described below.
+ 			# On ARM 32-bit systems this property is optional and
+ 			  can be one of:
+ 			    "allwinner,sun6i-a31"
++			    "allwinner,sun7i-a20"
+ 			    "arm,psci"
+ 			    "brcm,brahma-b15"
+ 			    "marvell,armada-375-smp"
+diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
+index 89749ce..0a03801 100644
+--- a/arch/arm/boot/dts/sun7i-a20.dtsi
++++ b/arch/arm/boot/dts/sun7i-a20.dtsi
+@@ -73,6 +73,7 @@
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		enable-method = "allwinner,sun7i-a20";
+ 
+ 		cpu@0 {
+ 			compatible = "arm,cortex-a7";
+@@ -920,6 +921,11 @@
+ 			interrupts = <0 29 4>;
+ 		};
+ 
++                cpuconfig: cpucfg@0x01c25c00 {
++                        compatible = "allwinner,sun7i-a20-cpuconfig";
++                        reg = <0x01c25c00 0x300>;
++                };
++
+ 		uart0: serial@01c28000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x01c28000 0x400>;
+-- 
+2.1.4
+
