@@ -1,4 +1,4 @@
-From 399e0b1edd5e080cace9af4f1c0c57cefc67316f Mon Sep 17 00:00:00 2001
+From 5ac485f1d587a16098ff5fcb2776baacedcabf70 Mon Sep 17 00:00:00 2001
 From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 Date: Tue, 3 Feb 2015 18:38:54 +0100
 Subject: [PATCH 2/2] sun7i: SMP startup code
@@ -23,7 +23,7 @@ Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
  1 file changed, 77 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-sunxi/platsmp.c b/arch/arm/mach-sunxi/platsmp.c
-index e44d028..de28acf 100644
+index e44d028..ace5030 100644
 --- a/arch/arm/mach-sunxi/platsmp.c
 +++ b/arch/arm/mach-sunxi/platsmp.c
 @@ -21,7 +21,7 @@
@@ -97,8 +97,8 @@ index e44d028..de28acf 100644
 +	writel(reg & ~BIT(cpu), cpucfg_membase + CPUCFG_DBG_CTL1_REG);
 +
 +	/* Power up CPU1 */
-+	for (i = 0xff; i != 0; i >>= 1)
-+		writel(i, cpucfg_membase + CPUCFG_CPU1_PWR_CLAMP);
++	for (i = 0; i <= 8; i++)
++		writel(0xff >> i, prcm_membase + PRCM_CPU_PWR_CLAMP_REG(cpu));
 +	mdelay(10);
 +
 +	/* Clear CPU power-off gating */
