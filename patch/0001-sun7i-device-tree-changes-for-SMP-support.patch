@@ -1,4 +1,4 @@
-From 4da01e0c96d328bed2ad643aeaff1a1bbb972c3b Mon Sep 17 00:00:00 2001
+From 7e3ca2d70e85070a28adecb75ba457ef7eb50964 Mon Sep 17 00:00:00 2001
 From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 Date: Tue, 3 Feb 2015 08:22:09 +0100
 Subject: [PATCH 1/2] sun7i: device tree changes for SMP support
