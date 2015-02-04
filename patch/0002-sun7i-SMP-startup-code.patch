@@ -1,4 +1,4 @@
-From 401ee214834439335c84ff0313c6c90b9b571ce1 Mon Sep 17 00:00:00 2001
+From f3243d598f4cdef2f79cf3c2e0b98dd27abf978e Mon Sep 17 00:00:00 2001
 From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 Date: Tue, 3 Feb 2015 18:38:54 +0100
 Subject: [PATCH 2/2] sun7i: SMP startup code
@@ -23,7 +23,7 @@ Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
  1 file changed, 76 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/mach-sunxi/platsmp.c b/arch/arm/mach-sunxi/platsmp.c
-index e44d028..2fee8ea 100644
+index e44d028..fe313e2 100644
 --- a/arch/arm/mach-sunxi/platsmp.c
 +++ b/arch/arm/mach-sunxi/platsmp.c
 @@ -21,6 +21,7 @@
@@ -74,7 +74,7 @@ index e44d028..2fee8ea 100644
 +	u32 reg;
 +	int i;
 +
-+	if (cpucfg_membase)
++	if (!cpucfg_membase)
 +		return -EFAULT;
 +
 +	spin_lock(&cpu_lock);
@@ -120,7 +120,7 @@ index e44d028..2fee8ea 100644
 +	.smp_prepare_cpus	= sun7i_smp_prepare_cpus,
 +	.smp_boot_secondary	= sun7i_smp_boot_secondary,
 +};
-+CPU_METHOD_OF_DECLARE(sun6i_smp, "allwinner,sun7i-a20", &sun7i_smp_ops);
++CPU_METHOD_OF_DECLARE(sun7i_smp, "allwinner,sun7i-a20", &sun7i_smp_ops);
 -- 
 2.1.4
 
