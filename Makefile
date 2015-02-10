@@ -1,4 +1,4 @@
-TAG=3.19-rc7
+TAG=3.19
 
 all: prepare build copy
 

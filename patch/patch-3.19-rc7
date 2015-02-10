@@ -1,3 +1,0 @@
-git am ../patch/0001-Reboot-allow-reboot-as-only-action.patch
-git am ../patch/0001-sun7i-device-tree-changes-for-SMP-support.patch
-git am ../patch/0002-sun7i-SMP-startup-code.patch
